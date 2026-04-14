@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('ket')->nullable();
-            $table->integer('total')->default(0); 
+            $table->integer('total')->default(0);
             $table->date('return_date')->nullable();
             $table->string('edited_by')->nullable();
             $table->timestamps();

@@ -6,20 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Items extends Model
 {
+    // Menambahkan 'name', 'total_stock', 'category_id', dan 'repair_count' ke properti fillable
     protected $fillable = [
         'name',
         'total_stock',
-        'repair_count',
         'category_id',
+        'repair_count'
     ];
-
-    /**
-     * Relasi ke Categories
-     */
-    public function categories()
-    {
-        return $this->belongsTo(Categories::class, 'category_id');
-    }
 
     /**
      * Relasi ke LendingsDetails
@@ -30,7 +23,15 @@ class Items extends Model
     }
 
     /**
-     * Hitung total item yang sedang dipinjam (belum dikembalikan)
+     * Relasi ke Category (Item belongs to a Category)
+     */
+    public function category()
+    {
+        return $this->belongsTo(Categories::class);
+    }
+
+    /**
+     * Hitung total item yang dipinjam
      */
     public function lendingTotal()
     {
@@ -38,12 +39,9 @@ class Items extends Model
             ->whereHas('lendings', function ($q) {
                 $q->whereNull('return_date');
             })
-            ->sum('total');
+            ->sum('total');  // Kolom 'total' yang baru ditambahkan
     }
 
-    /**
-     * Hitung stok yang tersedia (total - dipinjam - rusak)
-     */
     public function available()
     {
         $borrowed = $this->lendingTotal();

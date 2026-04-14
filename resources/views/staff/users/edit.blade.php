@@ -1,18 +1,18 @@
 @extends('template')
 
-@section('title', 'Edit Admin')
+@section('title', 'Staff Staff Edit')
 
 @section('content')
 
 <div class="mb-4">
-    <h4 class="fw-bold text-dark mb-1">Edit Akun Admin</h4>
-    <p class="text-secondary small mb-0">Perbarui data admin.</p>
+    <h4 class="fw-bold text-dark mb-1">Edit Staff</h4>
+    <p class="text-secondary small mb-0">Perbarui data staff.</p>
 </div>
 
 <div class="card border-0 shadow-sm rounded-3" style="max-width: 500px;">
     <div class="card-body p-4">
 
-        <form action="{{ route('users.update', $user->id) }}" method="POST">
+        <form action="{{ route('staff.profile.update', $user->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -41,7 +41,7 @@
 
             <!-- Button -->
             <div class="d-flex justify-content-end gap-2">
-                <a href="{{ route('users.admin') }}" class="btn text-dark px-4" style="background-color:#e0e0e0;">
+                <a href="{{ route('staff.admin') }}" class="btn text-dark px-4" style="background-color:#e0e0e0;">
                     Batal
                 </a>
                 <button type="submit" class="btn text-white px-4" style="background-color:#6f42c1;">

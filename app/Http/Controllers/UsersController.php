@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Exports\UserExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class UsersController extends Controller
 {
@@ -172,4 +175,11 @@ class UsersController extends Controller
         return redirect()->route('staff.dashboard')
                          ->with('success', 'Profil berhasil diupdate.');
     }
+
+    public function export(Request $request)
+    {
+        $role = $request->query('role', 'admin');
+        return Excel::download(new UserExport($role), $role . '-accounts.xlsx');
+    }
+
 }

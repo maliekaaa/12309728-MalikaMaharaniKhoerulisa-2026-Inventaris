@@ -9,6 +9,10 @@
         <p class="text-muted small mb-0">Manage inventory item data</p>
     </div>
     <div class="d-flex gap-2">
+        <a href="{{ route('items.export') }}"
+            class="btn text-white px-3" style="background-color: #6f42c1;">
+            Export Excel
+        </a>
         <a href="{{ route('items.create') }}" class="btn btn-green">
             <i class="bi bi-plus-lg me-1"></i> Add Item
         </a>
@@ -23,11 +27,10 @@
                     <tr>
                         <th style="width:50px;">#</th>
                         <th>Category</th>
-                        <th>Item Name</th>
-                        <th class="text-center">Total Stock</th>
-                        <th class="text-center">Damaged</th>
-                        <th class="text-center">Borrowed</th>
-                        <th class="text-center">Available</th>
+                        <th>Name</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Repair</th>
+                        <th class="text-center">Lending</th>
                         <th class="text-center" style="width:130px;">Actions</th>
                     </tr>
                 </thead>
@@ -36,8 +39,9 @@
                     <tr>
                         <td class="text-muted">{{ $index + 1 }}</td>
                         <td>
+                            {{-- @dd($items) --}}
                             <span class="badge bg-light text-dark border">
-                                {{ $item->categories->name ?? '-' }}
+                                {{ $item->category->name ?? '-' }}
                             </span>
                         </td>
                         <td class="fw-semibold">{{ $item->name }}</td>
@@ -50,11 +54,6 @@
                         <td class="text-center">
                             <span class="badge bg-{{ $item->lendingTotal() > 0 ? 'info text-dark' : 'light text-muted border' }}">
                                 {{ $item->lendingTotal() }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-{{ $item->available() > 0 ? 'success' : 'danger' }}">
-                                {{ $item->available() }}
                             </span>
                         </td>
                         <td class="text-center">

@@ -32,7 +32,7 @@
         min-width: var(--sidebar-w);
         max-width: var(--sidebar-w);
         min-height: 100vh;
-        background: linear-gradient(180deg, var(--blue-dark) 0%, #1e40af 100%);
+        background: linear-gradient(180deg, var(--blue-dark) 0%, #1A1953 100%);
         color: white;
         transition: all 0.3s ease;
         position: sticky;

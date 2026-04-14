@@ -35,7 +35,7 @@
                     <td>{{ auth()->user()->name }}</td>
                     <td>{{ $items->description }}</td>
                     <td>{{ $lendings->date }}</td>
-                    <td>{{ $retur }}</td>
+                    <td>{{ $return_date }}</td>
                     <td>
                         <span class="badge border border-warning text-warning bg-light">
                             not returned

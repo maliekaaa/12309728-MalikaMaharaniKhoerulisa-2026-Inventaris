@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h5 class="text-white fw-bold mb-1">
-                Selamat Datang, {{ auth()->user()->name }}! 👋
+                Welcome, {{ auth()->user()->name }}! 👋
             </h5>
             <p class="text-white opacity-75 mb-0 small">
                 {{ now()->translatedFormat('l, d F Y') }}

@@ -8,6 +8,8 @@ use App\Models\Items;
 use App\Models\LendingsDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Exports\LendingsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LendingsController extends Controller
 {
@@ -57,6 +59,8 @@ class LendingsController extends Controller
             'name'   => 'required|string|max:255',
             'items'  => 'required|array|min:1',
             'totals' => 'required|array|min:1',
+            // 'lendings.*.item_id' => 'required|exists:items,id',
+            // 'lendings.*.total'   => 'required|integer|min:1',
         ]);
 
         // Gunakan transaction agar jika satu gagal, semua dibatalkan
@@ -153,5 +157,10 @@ class LendingsController extends Controller
         $lending->delete();
 
         return back()->with('success', 'Data peminjaman berhasil dihapus.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new LendingsExport, 'lending-data.xlsx');
     }
 }
