@@ -15,9 +15,10 @@
     </div>
 
     <div class="d-flex gap-2">
-        <button class="btn text-white px-3" style="background-color:#6f42c1;">
+        <a href="{{ route('staff.export') }}"
+            class="btn text-white px-3" style="background-color: #6f42c1;">
             Export Excel
-        </button>
+        </a>
         <a href="{{ route('users.create') }}"
             class="btn text-white px-3" style="background-color: #20c997">
             <i class="bi bi-plus-square-fill me-2"></i> Add

@@ -9,6 +9,7 @@ class Lendings extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'activity',
         'ket',
         'total',
         'return_date',
@@ -23,5 +24,15 @@ class Lendings extends Model
     public function lendingsDetails()
     {
         return $this->hasMany(LendingsDetails::class, 'lending_id');
+    }
+
+    public function items()
+    {
+        return $this->belongsToMany(
+            Items::class,
+            'lendings_details',
+            'lending_id',
+            'item_id'
+        );
     }
 }

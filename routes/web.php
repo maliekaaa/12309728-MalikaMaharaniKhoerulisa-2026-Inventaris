@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/items/{id}', [ItemsController::class, 'update'])->name('items.update');
         Route::delete('/items/{id}', [ItemsController::class, 'destroy'])->name('items.delete');
         Route::get('admin/items/export', [ItemsController::class, 'export'])->name('items.export');
+        Route::get('/items/{id}/details', [ItemsController::class, 'details'])->name('items.details');
 
         // Users – Admin
         Route::get('/users-admin', [UsersController::class, 'indexAdmin'])->name('users.admin');
@@ -67,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/users/{id}', [UsersController::class, 'destroy'])->name('users.delete');
         Route::post('/users/reset-password/{id}', [UsersController::class, 'resetPassword'])->name('users.reset');
         Route::get('/users/export', [UsersController::class, 'export'])->name('users.export');
+        Route::get('/staff/export', [UsersController::class, 'exportStaff'])->name('staff.export');
 
         // Lendings (Admin view semua)
         Route::get('/admin/lendings', [LendingsController::class, 'adminIndex'])->name('admin.lendings.index');
@@ -88,7 +90,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/lendings/{id}/return', [LendingsController::class, 'return'])->name('lendings.return');
         Route::delete('/lendings/{id}', [LendingsController::class, 'destroy'])->name('lendings.destroy');
         Route::get('/lendings/export', [LendingsController::class, 'export'])->name('lendings.export');
-
         // Profile Staff
         Route::get('/profile/edit', [UsersController::class, 'editProfile'])->name('staff.profile.edit');
         Route::put('/profile/update', [UsersController::class, 'updateProfile'])->name('staff.profile.update');

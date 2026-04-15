@@ -16,13 +16,30 @@ class LendingsController extends Controller
     /**
      * Index untuk Staff – tampilkan semua lending milik user yang login
      */
-    public function index()
+    public function index(Request $request)
     {
-        $lendings = Lendings::with(['lendingsDetails.items', 'user'])
-                    ->where('user_id', Auth::id())
-                    ->latest()
-                    ->get();
+        $filter = $request->get('filter', 'all');
+        $query = Lendings::with(['lendingsDetails.item', 'user'])->where('user_id', Auth::id());
 
+        // Ganti 'date' menjadi 'created_at' karena kolom 'date' tidak ada di DB
+        switch ($filter) {
+            case 'weekly':
+                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                break;
+            case 'last_week':
+                $query->whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]);
+                break;
+            case 'monthly':
+                $query->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year);
+                break;
+            case 'last_month':
+                $query->whereMonth('created_at', now()->subMonth()->month)
+                    ->whereYear('created_at', now()->subMonth()->year);
+                break;
+        }
+
+        $lendings = $query->latest()->get();
         $items = Items::all();
 
         return view('staff.lendings.index', compact('lendings', 'items'));
@@ -33,7 +50,7 @@ class LendingsController extends Controller
      */
     public function adminIndex()
     {
-        $lendings = Lendings::with(['lendingsDetails.items', 'user'])
+        $lendings = Lendings::with(['lendingsDetails.item', 'user'])
                     ->latest()
                     ->get();
 
@@ -57,6 +74,7 @@ class LendingsController extends Controller
     {
         $request->validate([
             'name'   => 'required|string|max:255',
+            // 'activity'   => 'required|string|max:255',
             'items'  => 'required|array|min:1',
             'totals' => 'required|array|min:1',
             // 'lendings.*.item_id' => 'required|exists:items,id',
@@ -159,8 +177,9 @@ class LendingsController extends Controller
         return back()->with('success', 'Data peminjaman berhasil dihapus.');
     }
 
-    public function export()
+    public function export(Request $request) 
     {
-        return Excel::download(new LendingsExport, 'lending-data.xlsx');
+        $filter = $request->get('filter', 'all'); // ambil 'weekly', 'monthly', atau default 'all'
+        return Excel::download(new LendingsExport($filter), 'lending-report.xlsx');
     }
 }

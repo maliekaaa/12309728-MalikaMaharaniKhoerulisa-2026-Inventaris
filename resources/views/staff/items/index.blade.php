@@ -49,6 +49,7 @@
                             <span class="badge bg-{{ $item->lendingTotal() > 0 ? 'info text-dark' : 'light text-muted border' }}">
                                 {{ $item->lendingTotal() }}
                             </span>
+                        </td>
                     </tr>
                     @empty
                     <tr>

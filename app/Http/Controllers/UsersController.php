@@ -182,4 +182,10 @@ class UsersController extends Controller
         return Excel::download(new UserExport($role), $role . '-accounts.xlsx');
     }
 
+     public function exportStaff(Request $request)
+    {
+        $role = $request->query('role', 'staff');
+        return Excel::download(new UserExport($role), $role . '-accounts.xlsx');
+    }
+
 }

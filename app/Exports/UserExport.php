@@ -22,6 +22,8 @@ class UserExport implements FromCollection, WithHeadings, WithMapping
         return User::where('role', $this->role)->get();
     }
 
+    protected $no = 1;
+
     public function headings(): array
     {
         return [
@@ -34,7 +36,6 @@ class UserExport implements FromCollection, WithHeadings, WithMapping
 
     public function map($user): array
     {
-        // Menghasilkan password berdasarkan pola tertentu (misalnya, 4 karakter pertama email + ID)
         $generatedPassword = substr($user->email, 0, 4) . $user->id;
         $passwordText = 'This account already edited the password';
 
@@ -49,6 +50,7 @@ class UserExport implements FromCollection, WithHeadings, WithMapping
         }
 
         return [
+            $this->no++, 
             $user->name,
             $user->email,
             $passwordText,

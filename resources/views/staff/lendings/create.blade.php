@@ -9,22 +9,23 @@
     <p class="text-muted small mb-0">Isi formulir untuk merekam data peminjaman inventaris.</p>
 </div>
 
-<div class="card p-4" style="max-width: 700px;">
-    <form action="{{ route('lendings.store') }}" method="POST">
+<div id="alert-container"></div>
+
+<div class="card p-4 border-0 shadow-sm" style="max-width: 700px;">
+    <form action="{{ route('lendings.store') }}" method="POST" id="lending-form">
         @csrf
 
-        {{-- Nama Kegiatan / Peminjam --}}
+        {{-- Nama Peminjam --}}
         <div class="mb-4">
-            <label class="form-label fw-semibold">Nama Peminjam / Kegiatan <span class="text-danger">*</span></label>
-            <input type="text" name="name" class="form-control" placeholder="Contoh: Kegiatan Porseni" value="{{ old('name') }}" required>
+            <label class="form-label fw-semibold">Nama Peminjam<span class="text-danger">*</span></label>
+            <input type="text" name="name" class="form-control" placeholder="Masukkan Nama" value="{{ old('name') }}" required>
         </div>
 
         {{-- Dynamic Items Wrapper --}}
-        <h6 class="fw-bold mb-3 border-bottom pb-2">Keranjang Peminjaman</h6>
         <div id="items-wrapper">
             <div class="row mb-3 item-row align-items-end">
                 <div class="col-md-6">
-                    <label class="form-label small">Nama Item <span class="text-danger">*</span></label>
+                    <label class="form-label small fw-bold text-muted">Nama Item <span class="text-danger">*</span></label>
                     <select name="items[]" class="form-select item-select" required>
                         <option value="">Pilih Item</option>
                         @foreach($items as $item)
@@ -35,7 +36,7 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label small">Jumlah <span class="text-danger">*</span></label>
+                    <label class="form-label small fw-bold text-muted">Jumlah <span class="text-danger">*</span></label>
                     <input type="number" name="totals[]" class="form-control" placeholder="0" min="1" required>
                 </div>
                 <div class="col-md-2 mt-2 mt-md-0">
@@ -47,7 +48,7 @@
         </div>
 
         <div class="mb-4">
-            <button type="button" id="add-more" class="btn btn-outline-primary btn-sm">
+            <button type="button" id="add-more" class="btn btn-outline-primary btn-sm rounded-pill">
                 <i class="bi bi-plus-circle me-1"></i> Tambah Item Lain
             </button>
         </div>
@@ -59,9 +60,9 @@
         </div>
 
         {{-- Buttons --}}
-        <div class="d-flex justify-content-end gap-2">
-            <a href="{{ route('lendings.index') }}" class="btn btn-light border">Batal</a>
-            <button type="submit" class="btn btn-primary">
+        <div class="d-flex justify-content-end gap-2 border-top pt-4">
+            <a href="{{ route('lendings.index') }}" class="btn btn-light border px-4">Batal</a>
+            <button type="submit" class="btn btn-primary px-4">
                 <i class="bi bi-send-check me-1"></i> Ajukan Peminjaman
             </button>
         </div>
@@ -74,8 +75,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         const wrapper = document.getElementById('items-wrapper');
         const btnAdd = document.getElementById('add-more');
+        const form = document.getElementById('lending-form');
+        const alertContainer = document.getElementById('alert-container');
 
-        // template string, jadi kita pass list options dari server-side
         const itemOptions = `
             <option value="">Pilih Item</option>
             @foreach($items as $item)
@@ -85,9 +87,56 @@
             @endforeach
         `;
 
+        // Fungsi Memunculkan Alert Merah (Bootstrap Style)
+        function showAlert(message) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                    <div class="d-flex">
+                        <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                        <div>
+                            <strong class="d-block">Stok Tidak Mencukupi!</strong>
+                            <span class="small">${message}</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            // Scroll otomatis ke atas supaya alert terlihat
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Handle Submit Form (Validasi Akhir)
+        form.addEventListener('submit', function(e) {
+            const rows = wrapper.querySelectorAll('.item-row');
+            let hasError = false;
+            let errorMessage = "";
+
+            rows.forEach((row) => {
+                const select = row.querySelector('.item-select');
+                const inputQty = row.querySelector('input[name="totals[]"]');
+                const selectedOption = select.options[select.selectedIndex];
+                
+                if (selectedOption && selectedOption.value !== "") {
+                    const stockAvailable = parseInt(selectedOption.getAttribute('data-stok'));
+                    const requestedQty = parseInt(inputQty.value);
+                    const itemName = selectedOption.text.split('(')[0].trim();
+
+                    if (requestedQty > stockAvailable) {
+                        hasError = true;
+                        errorMessage += `Barang <b>${itemName}</b> hanya tersedia ${stockAvailable} unit. `;
+                    }
+                }
+            });
+
+            if (hasError) {
+                e.preventDefault(); // Menghentikan pengiriman form
+                showAlert(errorMessage);
+            }
+        });
+
+        // Tambah Row Baru
         btnAdd.addEventListener('click', function(e) {
             e.preventDefault();
-
             const newRow = document.createElement('div');
             newRow.className = 'row mb-3 item-row align-items-end';
             newRow.innerHTML = `
@@ -105,17 +154,15 @@
                     </button>
                 </div>
             `;
-
             wrapper.appendChild(newRow);
             updateRemoveButtons();
         });
 
-        // Event delegation for dynamically added remove buttons
+        // Hapus Row
         wrapper.addEventListener('click', function(e) {
             const removeBtn = e.target.closest('.remove-item');
             if (removeBtn) {
                 const row = removeBtn.closest('.item-row');
-                // Don't allow removing if it's the last row
                 if (wrapper.querySelectorAll('.item-row').length > 1) {
                     row.remove();
                     updateRemoveButtons();
@@ -126,8 +173,6 @@
         function updateRemoveButtons() {
             const rows = wrapper.querySelectorAll('.item-row');
             const btns = wrapper.querySelectorAll('.remove-item');
-
-            // Jika hanya 1 row, disable tombol hapus
             if (rows.length === 1) {
                 btns[0].disabled = true;
             } else {
@@ -137,5 +182,4 @@
     });
 </script>
 @endpush
-
 @endsection

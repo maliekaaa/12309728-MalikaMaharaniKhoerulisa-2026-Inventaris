@@ -51,8 +51,9 @@
                                 {{ $item->repair_count }}
                             </span>
                         </td>
-                        <td class="text-center">
+                         <td class="text-center">
                             <span class="badge bg-{{ $item->lendingTotal() > 0 ? 'info text-dark' : 'light text-muted border' }}">
+                               <!-- <a href="{{ route ('items.details', $item->id) }}"></a> -->
                                 {{ $item->lendingTotal() }}
                             </span>
                         </td>

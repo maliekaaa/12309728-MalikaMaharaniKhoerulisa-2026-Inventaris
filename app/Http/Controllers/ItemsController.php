@@ -19,6 +19,13 @@ class ItemsController extends Controller
         return view('admin.items.index', compact('items'));
     }
 
+    public function details($id)
+    {
+        $item = Items::with('lendingsDetails.lendings.user')->findOrFail($id);
+
+        return view('admin.items.details', compact('item'));
+    }
+
     // untuk halaman staff, tampilkan semua item tanpa tombol aksi
     public function staffIndex()
     {

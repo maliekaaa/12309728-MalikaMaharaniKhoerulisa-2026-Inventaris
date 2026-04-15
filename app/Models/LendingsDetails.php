@@ -21,9 +21,9 @@ class LendingsDetails extends Model
         return $this->belongsTo(Lendings::class, 'lending_id');
     }
 
-    public function items()
+    public function item()
     {
-        return $this->belongsTo(Items::class, 'item_id');
+        return $this->belongsTo(Items::class);
     }
 
     /**
