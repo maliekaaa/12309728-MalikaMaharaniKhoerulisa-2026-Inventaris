@@ -41,9 +41,6 @@
 
             <!-- Button -->
             <div class="d-flex justify-content-end gap-2">
-                <a href="{{ route('staff.admin') }}" class="btn text-dark px-4" style="background-color:#e0e0e0;">
-                    Batal
-                </a>
                 <button type="submit" class="btn text-white px-4" style="background-color:#6f42c1;">
                     Update
                 </button>

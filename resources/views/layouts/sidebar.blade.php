@@ -72,7 +72,7 @@
 
             <li class="section-title">Account</li>
             <li class="{{ request()->routeIs('staff.profile.*') ? 'active' : '' }}">
-                <a href="{{ route('staff.profile.update') }}">
+                <a href="{{ route('staff.profile.edit') }}">
                     <i class="bi bi-person-circle"></i>
                     Edit Profil
                 </a>

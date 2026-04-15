@@ -36,15 +36,11 @@
                         </td>
                         <td class="fw-semibold">{{ $item->name }}</td>
                         <td class="text-center">
-                            @if($item->available() > 0)
-                                <span class="fw-bold text-success fs-6">{{ $item->available() }}</span>
-                            @else
-                                <span class="fw-bold text-danger fs-6">{{ $item->available() }}</span>
-                            @endif
+                            {{ $item->total_stock }}
                         </td>
                         <td class="text-center">
                             @if($item->available() > 0)
-                                <span class="badge bg-success">Available</span>
+                                <span class="badge bg-success">{{ $item->available() }}</span>
                             @else
                                 <span class="badge bg-danger">Out of Stock</span>
                             @endif

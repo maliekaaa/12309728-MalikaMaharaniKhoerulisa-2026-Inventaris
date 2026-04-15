@@ -29,13 +29,13 @@ class LendingsDetails extends Model
     /**
      * Hitung total berdasarkan qty dan harga item
      */
-    public static function boot()
-    {
-        parent::boot();
+    // public static function boot()
+    // {
+    //     parent::boot();
 
-        static::saving(function ($lendingsDetails) {
-            $item = $lendingsDetails->item;
-            $lendingsDetails->total = $lendingsDetails->qty * $item->price;
-        });
-    }
+    //     static::saving(function ($lendingsDetails) {
+    //         $item = $lendingsDetails->item;
+    //         $lendingsDetails->total = $lendingsDetails->qty * $item->price;
+    //     });
+    // }
 }
